@@ -13,29 +13,78 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
+#define I2C_ADDRESS					0x30F
+#define I2C_DataSize				8
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 /* Private function prototypes -----------------------------------------------*/
 UART_HandleTypeDef UartHandle;
+I2C_HandleTypeDef I2C_Master_Handle;
+I2C_HandleTypeDef I2C_Slave_Handle;
 static void SystemClock_Config(void);
 
 static void Uart_Init(void);
 
 void I2C_Init(void);
+uint8_t	TxBuffer[I2C_DataSize] = {0xAA};
+uint8_t RxBuffer[I2C_DataSize] ;
 
 int main(void)
 {
   HAL_Init();
   SystemClock_Config();
+	
+	
+	BSP_LED_Init(LED3);
+	BSP_LED_Init(LED4);
+	BSP_LED_Init(LED5);
+	BSP_LED_Init(LED6);
+	
+	BSP_PB_Init(BUTTON_KEY,BUTTON_MODE_GPIO);	;
+	
 	Uart_Init();
 	I2C_Init();
-	
 	
 
 	printf("Test Uart \r\n");
   while (1)
   {
-
+		if(HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_0)==1)
+		{
+			#if 0
+			printf("TxBuffer 0x%2x\r\n",*TxBuffer);
+			HAL_I2C_Mem_Write(&I2C_Master_Handle, I2C_ADDRESS, NULL, I2C_MEMADD_SIZE_8BIT, (uint8_t*)TxBuffer, 1, 0xA00);
+			HAL_I2C_Mem_Read(&I2C_Slave_Handle, I2C_ADDRESS, NULL, I2C_MEMADD_SIZE_8BIT, RxBuffer, 1, 0xA00);
+			
+			printf("RxBuffer 0x%2x\r\n",*RxBuffer);
+			#endif
+			
+			
+			#if 1
+			printf("Trans Data : 0x%2x \r\n",TxBuffer[0]);
+			HAL_I2C_Master_Transmit(&I2C_Master_Handle,(uint16_t)I2C_ADDRESS,(uint8_t*)TxBuffer,1,100000);
+			BSP_LED_On(LED4);
+			HAL_I2C_Master_Receive(&I2C_Master_Handle, (uint16_t)I2C_ADDRESS, (uint8_t *)RxBuffer, 1, 10000);
+			printf("Receiver Data : 0x%2x \r\n",RxBuffer[0]);
+			HAL_I2C_Slave_Receive(&I2C_Slave_Handle, (uint8_t *)RxBuffer, 1, 10000);
+			printf("Receiver Data : 0x%2x \r\n",RxBuffer[0]);
+			HAL_I2C_Slave_Transmit(&I2C_Slave_Handle, (uint8_t*)TxBuffer, 1, 10000);
+			if(RxBuffer[0]==0xAA)
+			{
+				BSP_LED_Toggle(LED3);
+				HAL_Delay(500);
+				BSP_LED_Toggle(LED3);
+				HAL_Delay(500);				
+			}			
+			if(__HAL_I2C_GET_FLAG(&I2C_Slave_Handle, I2C_FLAG_BTF) == SET)
+			{
+				printf("Slave In\r\n");
+			}
+			#endif
+		}
+		
+		
+		
   }
 }
 PUTCHAR_PROTOTYPE
@@ -50,8 +99,7 @@ PUTCHAR_PROTOTYPE
 void I2C_Init(void)
 {
 	GPIO_InitTypeDef GPIO_InitStruct;
-	I2C_HandleTypeDef I2C_Master_Handle;
-	I2C_HandleTypeDef I2C_Slave_Handle;
+
 	
 	__HAL_RCC_GPIOB_CLK_ENABLE();
 	__HAL_RCC_I2C1_CLK_ENABLE();
@@ -66,8 +114,12 @@ void I2C_Init(void)
 	GPIO_InitStruct.Alternate =	GPIO_AF4_I2C1;
 	
 	HAL_GPIO_Init(GPIOB,&GPIO_InitStruct);
-	
-	#if 1 //Test SDA GPIO
+
+	#if 0
+  HAL_GPIO_WritePin(GPIOB,GPIO_PIN_6,GPIO_PIN_SET);
+  HAL_GPIO_WritePin(GPIOB,GPIO_PIN_7,GPIO_PIN_SET);
+	#endif
+	#if 0 //Test SDA GPIO
 	GPIO_InitStruct.Pin				=	GPIO_PIN_7;
 	GPIO_InitStruct.Alternate = GPIO_AF4_I2C1;
 	HAL_GPIO_Init(GPIOB,&GPIO_InitStruct);
@@ -75,19 +127,28 @@ void I2C_Init(void)
 	
   I2C_Master_Handle.Instance             = I2C1;
   
-  I2C_Master_Handle.Init.AddressingMode  = I2C_ADDRESSINGMODE_10BIT;
+  I2C_Master_Handle.Init.AddressingMode  = I2C_ADDRESSINGMODE_7BIT;
   I2C_Master_Handle.Init.ClockSpeed      = 400000;
   I2C_Master_Handle.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
-  I2C_Master_Handle.Init.DutyCycle       = I2C_DUTYCYCLE_16_9;
+  I2C_Master_Handle.Init.DutyCycle       = I2C_DUTYCYCLE_2;
   I2C_Master_Handle.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
   I2C_Master_Handle.Init.NoStretchMode   = I2C_NOSTRETCH_DISABLE;
-  I2C_Master_Handle.Init.OwnAddress1     = 0x30F; //TEST ADDRESS
-  I2C_Master_Handle.Init.OwnAddress2     = 0xFE;	
+  I2C_Master_Handle.Init.OwnAddress1     = I2C_ADDRESS; //TEST ADDRESS
+  I2C_Master_Handle.Init.OwnAddress2     = 0x00;	
+	
+	HAL_I2C_Init(&I2C_Master_Handle);
+	
+	#if 0
+	/* Force the I2C peripheral clock reset */
+	__HAL_RCC_I2C1_FORCE_RESET();	
+	/* Release the I2C peripheral clock reset */
+	__HAL_RCC_I2C2_RELEASE_RESET();
+	#endif
 	
 	//PB10 : SCL
-	//PB11 : SDA
+	//PB3 : SDA
 	
-	GPIO_InitStruct.Pin				=	GPIO_PIN_10 | GPIO_PIN_11;
+	GPIO_InitStruct.Pin				=	GPIO_PIN_10 | GPIO_PIN_3;
 	GPIO_InitStruct.Mode			=	GPIO_MODE_AF_OD;
 	GPIO_InitStruct.Pull			=	GPIO_PULLUP;
 	GPIO_InitStruct.Speed 		= GPIO_SPEED_FAST;
@@ -97,15 +158,22 @@ void I2C_Init(void)
 
   I2C_Slave_Handle.Instance             = I2C2;
   
-  I2C_Slave_Handle.Init.AddressingMode  = I2C_ADDRESSINGMODE_10BIT;
+  I2C_Slave_Handle.Init.AddressingMode  = I2C_ADDRESSINGMODE_7BIT;
   I2C_Slave_Handle.Init.ClockSpeed      = 400000;
   I2C_Slave_Handle.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
-  I2C_Slave_Handle.Init.DutyCycle       = I2C_DUTYCYCLE_16_9;
+  I2C_Slave_Handle.Init.DutyCycle       = I2C_DUTYCYCLE_2;
   I2C_Slave_Handle.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
   I2C_Slave_Handle.Init.NoStretchMode   = I2C_NOSTRETCH_DISABLE;
-  I2C_Slave_Handle.Init.OwnAddress1     = 0x30F; //TEST ADDRESS
-  I2C_Slave_Handle.Init.OwnAddress2     = 0xFE;	
+  I2C_Slave_Handle.Init.OwnAddress1     = I2C_ADDRESS; //TEST ADDRESS
+  I2C_Slave_Handle.Init.OwnAddress2     = 0x00;	
 
+	HAL_I2C_Init(&I2C_Slave_Handle);
+	#if 0
+	/* Force the I2C peripheral clock reset */
+	__HAL_RCC_I2C2_FORCE_RESET();
+	/* Release the I2C peripheral clock reset */
+	__HAL_RCC_I2C2_RELEASE_RESET();
+	#endif
 }
 
 void Uart_Init(void)
