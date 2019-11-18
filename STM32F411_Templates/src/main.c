@@ -21,8 +21,6 @@ static void SystemClock_Config(void);
 static void Uart_Init(void);
 UART_HandleTypeDef UartHandle;
 
-
-
 int main(void)
 {
   HAL_Init();
