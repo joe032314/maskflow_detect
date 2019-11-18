@@ -16,16 +16,21 @@
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 /* Private function prototypes -----------------------------------------------*/
+UART_HandleTypeDef UartHandle;
 static void SystemClock_Config(void);
 
 static void Uart_Init(void);
-UART_HandleTypeDef UartHandle;
+
+void I2C_Init(void);
 
 int main(void)
 {
   HAL_Init();
   SystemClock_Config();
 	Uart_Init();
+	I2C_Init();
+	
+	
 
 	printf("Test Uart \r\n");
   while (1)
@@ -42,6 +47,66 @@ PUTCHAR_PROTOTYPE
   return ch;
 }
 
+void I2C_Init(void)
+{
+	GPIO_InitTypeDef GPIO_InitStruct;
+	I2C_HandleTypeDef I2C_Master_Handle;
+	I2C_HandleTypeDef I2C_Slave_Handle;
+	
+	__HAL_RCC_GPIOB_CLK_ENABLE();
+	__HAL_RCC_I2C1_CLK_ENABLE();
+	__HAL_RCC_I2C2_CLK_ENABLE();
+	
+	//PB6 : SCL
+	//PB7 : SDA
+	GPIO_InitStruct.Pin				=	GPIO_PIN_6 | GPIO_PIN_7;
+	GPIO_InitStruct.Mode			=	GPIO_MODE_AF_OD;
+	GPIO_InitStruct.Pull			=	GPIO_PULLUP;
+	GPIO_InitStruct.Speed 		= GPIO_SPEED_FAST;
+	GPIO_InitStruct.Alternate =	GPIO_AF4_I2C1;
+	
+	HAL_GPIO_Init(GPIOB,&GPIO_InitStruct);
+	
+	#if 1 //Test SDA GPIO
+	GPIO_InitStruct.Pin				=	GPIO_PIN_7;
+	GPIO_InitStruct.Alternate = GPIO_AF4_I2C1;
+	HAL_GPIO_Init(GPIOB,&GPIO_InitStruct);
+	#endif
+	
+  I2C_Master_Handle.Instance             = I2C1;
+  
+  I2C_Master_Handle.Init.AddressingMode  = I2C_ADDRESSINGMODE_10BIT;
+  I2C_Master_Handle.Init.ClockSpeed      = 400000;
+  I2C_Master_Handle.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
+  I2C_Master_Handle.Init.DutyCycle       = I2C_DUTYCYCLE_16_9;
+  I2C_Master_Handle.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
+  I2C_Master_Handle.Init.NoStretchMode   = I2C_NOSTRETCH_DISABLE;
+  I2C_Master_Handle.Init.OwnAddress1     = 0x30F; //TEST ADDRESS
+  I2C_Master_Handle.Init.OwnAddress2     = 0xFE;	
+	
+	//PB10 : SCL
+	//PB11 : SDA
+	
+	GPIO_InitStruct.Pin				=	GPIO_PIN_10 | GPIO_PIN_11;
+	GPIO_InitStruct.Mode			=	GPIO_MODE_AF_OD;
+	GPIO_InitStruct.Pull			=	GPIO_PULLUP;
+	GPIO_InitStruct.Speed 		= GPIO_SPEED_FAST;
+	GPIO_InitStruct.Alternate =	GPIO_AF4_I2C2;	
+	
+	HAL_GPIO_Init(GPIOB,&GPIO_InitStruct);
+
+  I2C_Slave_Handle.Instance             = I2C2;
+  
+  I2C_Slave_Handle.Init.AddressingMode  = I2C_ADDRESSINGMODE_10BIT;
+  I2C_Slave_Handle.Init.ClockSpeed      = 400000;
+  I2C_Slave_Handle.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
+  I2C_Slave_Handle.Init.DutyCycle       = I2C_DUTYCYCLE_16_9;
+  I2C_Slave_Handle.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
+  I2C_Slave_Handle.Init.NoStretchMode   = I2C_NOSTRETCH_DISABLE;
+  I2C_Slave_Handle.Init.OwnAddress1     = 0x30F; //TEST ADDRESS
+  I2C_Slave_Handle.Init.OwnAddress2     = 0xFE;	
+
+}
 
 void Uart_Init(void)
 {
