@@ -127,8 +127,8 @@ I (.\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_ll_usb.h)(0x5DD26622)
 I (.\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_pcd_ex.h)(0x5DD26622)
 I (.\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_hcd.h)(0x5DD26622)
 F (.\src\startup_stm32f411xe.s)(0x5DD26623)(--cpu Cortex-M4.fp -g --apcs=interwork --pd "__MICROLIB SETA 1"-I.\RTE\_Templates-IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.13.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-IC:\Keil_v5\ARM\CMSIS\Include--pd "__UVISION_VERSION SETA 526" --pd "STM32F411xE SETA 1"--list .\listings\startup_stm32f411xe.lst --xref -o .\objects\startup_stm32f411xe.o --depend .\objects\startup_stm32f411xe.d)
-F (.\src\main.c)(0x5DD26623)(--c99 -c --cpu Cortex-M4.fp -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I .\inc -I .\Drivers\arm\Include -I .\Drivers\STM32F4xx_HAL_Driver\Inc -I .\Drivers\BSP\STM32F411E-Discovery -I C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.4.0\CMSIS\Core\Include-I.\RTE\_Templates-IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.13.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-IC:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="526" -DSTM32F411xE -DUSE_HAL_DRIVER -DSTM32F411xE -DUSE_STM32F411E_DISCO-o .\objects\main.o --omf_browse .\objects\main.crf --depend .\objects\main.d)
-I (.\inc\main.h)(0x5DD26623)
+F (.\src\main.c)(0x5DD29A22)(--c99 -c --cpu Cortex-M4.fp -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I .\inc -I .\Drivers\arm\Include -I .\Drivers\STM32F4xx_HAL_Driver\Inc -I .\Drivers\BSP\STM32F411E-Discovery -I C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.4.0\CMSIS\Core\Include-I.\RTE\_Templates-IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.13.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-IC:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="526" -DSTM32F411xE -DUSE_HAL_DRIVER -DSTM32F411xE -DUSE_STM32F411E_DISCO-o .\objects\main.o --omf_browse .\objects\main.crf --depend .\objects\main.d)
+I (.\inc\main.h)(0x5DD28299)
 I (.\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal.h)(0x5DD26622)
 I (.\inc\stm32f4xx_hal_conf.h)(0x5DD26623)
 I (.\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_rcc.h)(0x5DD26622)
@@ -191,9 +191,10 @@ I (.\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_pcd.h)(0x5DD26622)
 I (.\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_ll_usb.h)(0x5DD26622)
 I (.\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_pcd_ex.h)(0x5DD26622)
 I (.\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_hcd.h)(0x5DD26622)
+I (.\Drivers\BSP\STM32F411E-Discovery\stm32f411e_discovery.h)(0x5DD26622)
 I (C:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x599EDB3C)
 F (.\src\stm32f4xx_it.c)(0x5DD26623)(--c99 -c --cpu Cortex-M4.fp -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I .\inc -I .\Drivers\arm\Include -I .\Drivers\STM32F4xx_HAL_Driver\Inc -I .\Drivers\BSP\STM32F411E-Discovery -I C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.4.0\CMSIS\Core\Include-I.\RTE\_Templates-IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.13.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-IC:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="526" -DSTM32F411xE -DUSE_HAL_DRIVER -DSTM32F411xE -DUSE_STM32F411E_DISCO-o .\objects\stm32f4xx_it.o --omf_browse .\objects\stm32f4xx_it.crf --depend .\objects\stm32f4xx_it.d)
-I (.\inc\main.h)(0x5DD26623)
+I (.\inc\main.h)(0x5DD28299)
 I (.\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal.h)(0x5DD26622)
 I (.\inc\stm32f4xx_hal_conf.h)(0x5DD26623)
 I (.\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_rcc.h)(0x5DD26622)
@@ -256,6 +257,7 @@ I (.\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_pcd.h)(0x5DD26622)
 I (.\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_ll_usb.h)(0x5DD26622)
 I (.\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_pcd_ex.h)(0x5DD26622)
 I (.\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_hcd.h)(0x5DD26622)
+I (.\Drivers\BSP\STM32F411E-Discovery\stm32f411e_discovery.h)(0x5DD26622)
 I (.\inc\stm32f4xx_it.h)(0x5DD26623)
 F (.\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal.c)(0x5DD26623)(--c99 -c --cpu Cortex-M4.fp -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I .\inc -I .\Drivers\arm\Include -I .\Drivers\STM32F4xx_HAL_Driver\Inc -I .\Drivers\BSP\STM32F411E-Discovery -I C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.4.0\CMSIS\Core\Include-I.\RTE\_Templates-IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.13.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-IC:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="526" -DSTM32F411xE -DUSE_HAL_DRIVER -DSTM32F411xE -DUSE_STM32F411E_DISCO-o .\objects\stm32f4xx_hal.o --omf_browse .\objects\stm32f4xx_hal.crf --depend .\objects\stm32f4xx_hal.d)
 I (.\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal.h)(0x5DD26622)
