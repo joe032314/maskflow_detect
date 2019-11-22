@@ -142,6 +142,9 @@ void    COMPASSACCELERO_IO_Init(void);
 void    COMPASSACCELERO_IO_ITConfig(void);
 void    COMPASSACCELERO_IO_Write(uint16_t DeviceAddr, uint8_t RegisterAddr, uint8_t Value);
 uint8_t COMPASSACCELERO_IO_Read(uint16_t DeviceAddr, uint8_t RegisterAddr);
+
+/* Error Occurrence */
+static void Error_Handler(void);
 /**
   * @}
   */ 
@@ -179,7 +182,7 @@ void BSP_LED_Init(Led_TypeDef Led)
   GPIO_InitStruct.Pin = GPIO_PIN[Led];
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FAST;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
   
   HAL_GPIO_Init(GPIO_PORT[Led], &GPIO_InitStruct);
   
@@ -635,6 +638,15 @@ void AUDIO_IO_Init(void)
 void AUDIO_IO_DeInit(void) 
 {
   
+}
+
+static void Error_Handler(void)
+{
+  /* Turn LED5 on */
+  BSP_LED_On(LED5);
+  while(1)
+  {
+  }
 }
 
 /**

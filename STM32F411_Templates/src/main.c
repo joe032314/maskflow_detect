@@ -2,7 +2,7 @@
 #include "main.h"
 #include <stdio.h>
 #include <stdlib.h>
-
+#include "stm32f411e_discovery.h"
 #ifdef __GNUC__
 /* With GCC/RAISONANCE, small printf (option LD Linker->Libraries->Small printf
    set to 'Yes') calls __io_putchar() */
@@ -10,17 +10,22 @@
 #else
 #define PUTCHAR_PROTOTYPE int fputc(int ch, FILE *f)
 #endif /* __GNUC__ */	
-
+#define MASTER_BOARD
+#define I2C_ADDRESS        0x30F
+#define I2C_DataSize			 1
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 /* Private function prototypes -----------------------------------------------*/
 static void SystemClock_Config(void);
-
+static void I2C_Init(void);
 static void Uart_Init(void);
+static void Error_Handler(void);
+static I2C_HandleTypeDef    I2cHandle;
 UART_HandleTypeDef UartHandle;
-
+uint8_t	TxBuffer[I2C_DataSize] = {100};
+uint8_t RxBuffer[I2C_DataSize] ;
 
 
 int main(void)
@@ -28,11 +33,28 @@ int main(void)
   HAL_Init();
   SystemClock_Config();
 	Uart_Init();
-
+	I2C_Init();
+	BSP_LED_Init(LED3);
+	BSP_LED_Init(LED4);
+	BSP_LED_Init(LED5);
+	BSP_LED_Init(LED6);
+	
+	BSP_PB_Init(BUTTON_KEY,BUTTON_MODE_GPIO);
 	printf("Test Uart \r\n");
+	
+
+	
   while (1)
   {
-
+		#ifdef MASTER_BOARD
+		if(HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_0)==1)
+		{
+			printf("Transmit Data: %d\r\n",TxBuffer[0]);
+			HAL_Delay(200);
+			HAL_I2C_Master_Transmit(&I2cHandle, (uint16_t)I2C_ADDRESS, (uint8_t*)TxBuffer, 1, 0xffff);
+			BSP_LED_On(LED3);
+		}
+		#endif
   }
 }
 PUTCHAR_PROTOTYPE
@@ -42,6 +64,58 @@ PUTCHAR_PROTOTYPE
   HAL_UART_Transmit(&UartHandle, (uint8_t *)&ch, 1, 0xFFFF);
 
   return ch;
+}
+
+
+void I2C_Init(void)
+{
+	GPIO_InitTypeDef GPIO_InitStruct ;
+	
+	__HAL_RCC_I2C1_CLK_ENABLE();
+	__HAL_RCC_I2C2_CLK_ENABLE();
+	__HAL_RCC_GPIOB_CLK_ENABLE();
+	
+	/*PB6,PB7 */
+	GPIO_InitStruct.Pin = GPIO_PIN_6 | GPIO_PIN_7;
+  GPIO_InitStruct.Mode = GPIO_MODE_AF_OD;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+	GPIO_InitStruct.Alternate =	GPIO_AF4_I2C1;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+	
+	I2cHandle.Instance             = I2C1;
+  I2cHandle.Init.AddressingMode  = I2C_ADDRESSINGMODE_7BIT;
+  I2cHandle.Init.ClockSpeed      = 400000;
+  I2cHandle.Init.DualAddressMode = I2C_DUALADDRESS_DISABLED;
+  I2cHandle.Init.DutyCycle       = I2C_DUTYCYCLE_2;
+  I2cHandle.Init.GeneralCallMode = I2C_GENERALCALL_DISABLED;
+  I2cHandle.Init.NoStretchMode   = I2C_NOSTRETCH_DISABLED;
+  I2cHandle.Init.OwnAddress1     = I2C_ADDRESS;
+  I2cHandle.Init.OwnAddress2     = 0x00;
+	
+	/*PB8,PB9*/
+	GPIO_InitStruct.Pin = GPIO_PIN_8 | GPIO_PIN_9;
+  GPIO_InitStruct.Mode = GPIO_MODE_AF_OD;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+	GPIO_InitStruct.Alternate =	GPIO_AF4_I2C1;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+	
+	I2cHandle.Instance             = I2C2;
+  I2cHandle.Init.AddressingMode  = I2C_ADDRESSINGMODE_7BIT;
+  I2cHandle.Init.ClockSpeed      = 400000;
+  I2cHandle.Init.DualAddressMode = I2C_DUALADDRESS_DISABLED;
+  I2cHandle.Init.DutyCycle       = I2C_DUTYCYCLE_2;
+  I2cHandle.Init.GeneralCallMode = I2C_GENERALCALL_DISABLED;
+  I2cHandle.Init.NoStretchMode   = I2C_NOSTRETCH_DISABLED;
+  I2cHandle.Init.OwnAddress1     = I2C_ADDRESS;
+  I2cHandle.Init.OwnAddress2     = 0x00;
+	
+  if(HAL_I2C_Init(&I2cHandle) != HAL_OK)
+  {
+    /* Initialization Error */
+    Error_Handler();    
+  }
 }
 
 
@@ -112,4 +186,11 @@ static void SystemClock_Config(void)
   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;  
   HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_3);
 }
-
+static void Error_Handler(void)
+{
+  /* Turn LED5 on */
+  BSP_LED_On(LED5);
+  while(1)
+  {
+  }
+}
