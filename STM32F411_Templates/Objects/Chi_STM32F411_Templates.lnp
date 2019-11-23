@@ -4,6 +4,7 @@
 ".\objects\startup_stm32f411xe.o"
 ".\objects\main.o"
 ".\objects\stm32f4xx_it.o"
+".\objects\lps33hw_reg.o"
 ".\objects\stm32f4xx_hal.o"
 ".\objects\stm32f4xx_hal_adc.o"
 ".\objects\stm32f4xx_hal_adc_ex.o"
