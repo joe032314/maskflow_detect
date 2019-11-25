@@ -47,13 +47,11 @@ int main(void)
   while (1)
   {
 		#ifdef MASTER_BOARD
-		if(HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_0)==1)
-		{
 			printf("Transmit Data: %d\r\n",TxBuffer[0]);
 			HAL_Delay(200);
 			HAL_I2C_Master_Transmit(&I2cHandle, (uint16_t)I2C_ADDRESS, (uint8_t*)TxBuffer, 1, 0xffff);
 			BSP_LED_On(LED3);
-		}
+			
 		#endif
   }
 }
